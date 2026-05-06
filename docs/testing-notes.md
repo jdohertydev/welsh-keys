@@ -2,6 +2,8 @@
 
 Use this checklist for manual testing before publishing changes.
 
+Automated tests cover deterministic logic only, such as character lists and theme palette values. Real app insertion still needs manual testing in target applications.
+
 ## Basic Launch
 
 - [ ] Run `python welsh_keys.py`

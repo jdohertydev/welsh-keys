@@ -51,6 +51,22 @@ python -m pip install -r requirements.txt
 python welsh_keys.py
 ```
 
+## Testing
+
+Install development dependencies:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+Run the automated tests:
+
+```powershell
+pytest
+```
+
+The automated tests cover deterministic module data only. They do not automate external applications or insertion behavior.
+
 ## Usage
 
 1. Open Welsh Keys.
