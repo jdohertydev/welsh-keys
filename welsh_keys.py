@@ -1,4 +1,5 @@
 import time
+
 import customtkinter as ctk
 import pyautogui
 import pygetwindow as gw
@@ -8,13 +9,29 @@ import pyperclip
 LOWERCASE_CHARS = ["â", "ê", "î", "ô", "û", "ŵ", "ŷ", "ï", "ö"]
 UPPERCASE_CHARS = ["Â", "Ê", "Î", "Ô", "Û", "Ŵ", "Ŷ", "Ï", "Ö"]
 
+APP_BACKGROUND = "#1b1b1b"
+KEY_BACKGROUND = "#303030"
+KEY_HOVER = "#3a3a3a"
+KEY_BORDER = "#4a4a4a"
+MAIN_TEXT = "#f2f2f2"
+FONT_FAMILY = "Segoe UI"
+
+BUTTON_STYLE = {
+    "fg_color": KEY_BACKGROUND,
+    "hover_color": KEY_HOVER,
+    "text_color": MAIN_TEXT,
+    "border_width": 1,
+    "border_color": KEY_BORDER,
+    "corner_radius": 2,
+}
+
 
 class WelshKeys(ctk.CTk):
     def __init__(self):
         super().__init__()
 
         self.title("Welsh Keys")
-        self.geometry("610x220")
+        self.geometry("480x90")
         self.resizable(False, False)
         self.attributes("-topmost", True)
 
@@ -29,87 +46,50 @@ class WelshKeys(ctk.CTk):
         self.track_active_window()
 
     def build_ui(self):
-        self.configure(fg_color="#1b1b1b")
+        self.configure(fg_color=APP_BACKGROUND)
+        self.grid_columnconfigure(0, weight=1)
 
-        title = ctk.CTkLabel(
-            self,
-            text="Welsh Keys",
-            font=("Segoe UI", 20, "bold"),
-            text_color="#f2f2f2",
-        )
-        title.pack(pady=(14, 4))
+        keys_frame = ctk.CTkFrame(self, fg_color=APP_BACKGROUND)
+        keys_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(8, 6))
+        keys_frame.grid_columnconfigure(tuple(range(len(LOWERCASE_CHARS))), weight=1)
 
-        helper = ctk.CTkLabel(
-            self,
-            text="Click where you want to type, then click a Welsh key.",
-            font=("Segoe UI", 12),
-            text_color="#cfcfcf",
-        )
-        helper.pack(pady=(0, 12))
-
-        keys_frame = ctk.CTkFrame(self, fg_color="#1b1b1b")
-        keys_frame.pack(pady=(0, 14))
-
-        for char in LOWERCASE_CHARS:
+        for index, char in enumerate(LOWERCASE_CHARS):
             button = ctk.CTkButton(
                 keys_frame,
                 text=char,
-                width=54,
-                height=48,
-                fg_color="#303030",
-                hover_color="#3a3a3a",
-                text_color="#f2f2f2",
-                border_width=1,
-                border_color="#4a4a4a",
-                corner_radius=2,
-                font=("Segoe UI", 23),
+                width=42,
+                height=38,
+                font=(FONT_FAMILY, 20),
+                **BUTTON_STYLE,
                 command=lambda c=char: self.handle_key(c),
             )
-            button.pack(side="left", padx=4)
+            button.grid(row=0, column=index, sticky="ew", padx=2)
             self.key_buttons.append(button)
 
-        controls = ctk.CTkFrame(self, fg_color="#1b1b1b")
-        controls.pack(pady=(0, 8))
+        controls = ctk.CTkFrame(self, fg_color=APP_BACKGROUND)
+        controls.grid(row=1, column=0, pady=(0, 8))
 
         self.shift_button = ctk.CTkButton(
             controls,
-            text="Shift: off",
-            width=120,
-            height=34,
-            fg_color="#303030",
-            hover_color="#3a3a3a",
-            text_color="#f2f2f2",
-            border_width=1,
-            border_color="#4a4a4a",
-            corner_radius=2,
-            font=("Segoe UI", 12),
+            text="Shift",
+            width=92,
+            height=30,
+            font=(FONT_FAMILY, 12),
+            **BUTTON_STYLE,
             command=self.toggle_shift,
         )
-        self.shift_button.pack(side="left", padx=5)
+        self.shift_button.grid(row=0, column=0, padx=4)
 
         self.mode_button = ctk.CTkButton(
             controls,
-            text="Mode: Insert",
-            width=140,
-            height=34,
-            fg_color="#303030",
-            hover_color="#3a3a3a",
-            text_color="#f2f2f2",
-            border_width=1,
-            border_color="#4a4a4a",
-            corner_radius=2,
-            font=("Segoe UI", 12),
+            text="Insert",
+            width=92,
+            height=30,
+            font=(FONT_FAMILY, 12),
+            **BUTTON_STYLE,
             command=self.toggle_mode,
         )
-        self.mode_button.pack(side="left", padx=5)
-
-        self.status = ctk.CTkLabel(
-            self,
-            text="Ready",
-            font=("Segoe UI", 12),
-            text_color="#cfcfcf",
-        )
-        self.status.pack()
+        self.mode_button.grid(row=0, column=1, padx=4)
 
     def track_active_window(self):
         try:
@@ -136,18 +116,12 @@ class WelshKeys(ctk.CTk):
 
     def toggle_shift(self):
         self.uppercase = not self.uppercase
-        self.shift_button.configure(
-            text="Shift: ON" if self.uppercase else "Shift: off"
-        )
         self.refresh_keys()
 
     def toggle_mode(self):
         self.insert_mode = not self.insert_mode
         self.mode_button.configure(
-            text="Mode: Insert" if self.insert_mode else "Mode: Copy"
-        )
-        self.status.configure(
-            text="Insert mode" if self.insert_mode else "Copy mode"
+            text="Insert" if self.insert_mode else "Copy"
         )
 
     def handle_key(self, char):
@@ -155,7 +129,6 @@ class WelshKeys(ctk.CTk):
             self.insert_at_cursor(char)
         else:
             pyperclip.copy(char)
-            self.status.configure(text=f"Copied: {char}")
 
     def insert_at_cursor(self, char):
         previous_clipboard = None
@@ -181,11 +154,8 @@ class WelshKeys(ctk.CTk):
             if previous_clipboard is not None:
                 pyperclip.copy(previous_clipboard)
 
-            self.status.configure(text=f"Inserted: {char}")
-
         except Exception:
             pyperclip.copy(char)
-            self.status.configure(text=f"Insert failed. Copied: {char}")
 
 
 if __name__ == "__main__":
