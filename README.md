@@ -4,7 +4,7 @@ Welsh Keys is a small Windows desktop utility for typing Welsh accented characte
 
 ## Screenshot
 
-Screenshot coming later. The current prototype is intentionally minimal: one row of Welsh keys and two control buttons.
+Screenshot coming later. The current prototype is intentionally minimal: one row of Welsh keys and compact control buttons.
 
 ## Features
 
@@ -15,6 +15,7 @@ Screenshot coming later. The current prototype is intentionally minimal: one row
 - Shift toggle for character case
 - Insert mode using clipboard paste into the previously active app
 - Copy mode for apps where direct insertion is unreliable
+- Compact Light/Dark theme toggle
 
 ## Characters Supported
 
@@ -57,6 +58,7 @@ python welsh_keys.py
 3. Click a Welsh character key.
 4. Use `Shift` to switch between lowercase and uppercase characters.
 5. Use `Insert` / `Copy` to switch between direct insertion and copy-only mode.
+6. Use `Light` / `Dark` to switch between dark and light themes.
 
 ## Known Limitations
 

@@ -37,3 +37,11 @@ Use this checklist for manual testing before publishing changes.
 - [ ] Confirm insert or copy behavior still works
 - [ ] Click `Shift` again
 - [ ] Confirm the keys return to lowercase
+
+## Theme Mode
+
+- [ ] Click `Light`
+- [ ] Confirm the app changes to the light theme
+- [ ] Confirm the theme button changes to `Dark`
+- [ ] Click `Dark`
+- [ ] Confirm the app returns to the dark theme
