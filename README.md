@@ -2,6 +2,14 @@
 
 Welsh Keys is a small Windows desktop utility for typing Welsh accented characters. It provides a compact always-on-top keyboard window that inserts Welsh characters into the previously active app.
 
+## Download
+
+A packaged Windows test release is available from the [GitHub Releases page](https://github.com/jdohertydev/welsh-keys/releases).
+
+Download `WelshKeys-v0.1.0.zip`, extract it, and run `WelshKeys.exe`.
+
+Windows may show a SmartScreen warning because this is an unsigned early test app.
+
 ## Screenshot
 
 Screenshot coming later. The current prototype is intentionally minimal: one row of Welsh keys and compact control buttons.
@@ -82,7 +90,7 @@ Clicking a Welsh key copies the character to the clipboard, returns focus to the
 - Insertion uses the clipboard and may leave the inserted Welsh character/string on the clipboard.
 - Some apps may block automated paste or focus changes.
 - If automatic insertion is unreliable in an app, paste manually with `Ctrl+V`.
-- This is currently a Windows-focused prototype, not a packaged installer.
+- This is currently a Windows-focused prototype.
 
 ## Privacy And Security
 
@@ -90,7 +98,7 @@ Welsh Keys runs locally and does not send network requests. Clicking a Welsh key
 
 ## Prototype Status
 
-This is a v0.1 prototype focused on the core typing workflow. Packaging, system tray support, advanced character tools, and app-specific helpers are intentionally out of scope for now.
+This is a v0.1 prototype focused on the core typing workflow. A packaged Windows test release is available from GitHub Releases. System tray support, advanced character tools, and app-specific helpers are intentionally out of scope for now.
 
 ## Development Notes
 
