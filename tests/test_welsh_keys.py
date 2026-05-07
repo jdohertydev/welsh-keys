@@ -48,3 +48,23 @@ def test_theme_definitions_include_required_ui_values():
         "border": "#c8c8c8",
         "text": "#1f1f1f",
     }
+
+
+def test_pending_insert_buffer_combines_fast_clicks():
+    buffer = welsh_keys.PendingInsertBuffer()
+
+    for char in welsh_keys.LOWERCASE_CHARS[:5]:
+        buffer.append(char)
+
+    assert buffer.pop_all() == "".join(welsh_keys.LOWERCASE_CHARS[:5])
+
+
+def test_pending_insert_buffer_clears_after_pop():
+    buffer = welsh_keys.PendingInsertBuffer()
+
+    buffer.append(welsh_keys.LOWERCASE_CHARS[0])
+
+    assert buffer.has_text()
+    assert buffer.pop_all() == welsh_keys.LOWERCASE_CHARS[0]
+    assert not buffer.has_text()
+    assert buffer.pop_all() == ""

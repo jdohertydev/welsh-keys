@@ -10,6 +10,7 @@ LOWERCASE_CHARS = ["â", "ê", "î", "ô", "û", "ŵ", "ŷ", "ï", "ö"]
 UPPERCASE_CHARS = ["Â", "Ê", "Î", "Ô", "Û", "Ŵ", "Ŷ", "Ï", "Ö"]
 
 FONT_FAMILY = "Segoe UI"
+INSERT_DEBOUNCE_MS = 125
 
 THEMES = {
     "dark": {
@@ -29,6 +30,22 @@ THEMES = {
 }
 
 
+class PendingInsertBuffer:
+    def __init__(self):
+        self._text = ""
+
+    def append(self, char):
+        self._text += char
+
+    def pop_all(self):
+        text = self._text
+        self._text = ""
+        return text
+
+    def has_text(self):
+        return bool(self._text)
+
+
 class WelshKeys(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -41,12 +58,14 @@ class WelshKeys(ctk.CTk):
         ctk.set_appearance_mode("dark")
 
         self.uppercase = False
-        self.insert_mode = True
         self.dark_theme = True
         self.previous_window_title = None
         self.key_buttons = []
         self.frames = []
         self.control_buttons = []
+        self.pending_insert_buffer = PendingInsertBuffer()
+        self.pending_insert_after_id = None
+        self.paste_in_progress = False
 
         self.build_ui()
         self.track_active_window()
@@ -105,18 +124,6 @@ class WelshKeys(ctk.CTk):
         self.shift_button.grid(row=0, column=0, padx=4)
         self.control_buttons.append(self.shift_button)
 
-        self.mode_button = ctk.CTkButton(
-            controls,
-            text="Insert",
-            width=92,
-            height=30,
-            font=(FONT_FAMILY, 12),
-            **self.button_style(),
-            command=self.toggle_mode,
-        )
-        self.mode_button.grid(row=0, column=1, padx=4)
-        self.control_buttons.append(self.mode_button)
-
         self.theme_button = ctk.CTkButton(
             controls,
             text="Light",
@@ -126,7 +133,7 @@ class WelshKeys(ctk.CTk):
             **self.button_style(),
             command=self.toggle_theme,
         )
-        self.theme_button.grid(row=0, column=2, padx=4)
+        self.theme_button.grid(row=0, column=1, padx=4)
         self.control_buttons.append(self.theme_button)
 
     def apply_theme(self):
@@ -175,28 +182,51 @@ class WelshKeys(ctk.CTk):
         self.uppercase = not self.uppercase
         self.refresh_keys()
 
-    def toggle_mode(self):
-        self.insert_mode = not self.insert_mode
-        self.mode_button.configure(
-            text="Insert" if self.insert_mode else "Copy"
+    def handle_key(self, char):
+        self.queue_insert(char)
+
+    def queue_insert(self, char):
+        self.pending_insert_buffer.append(char)
+
+        if self.pending_insert_after_id is not None:
+            self.after_cancel(self.pending_insert_after_id)
+
+        self.pending_insert_after_id = self.after(
+            INSERT_DEBOUNCE_MS,
+            self.flush_pending_insert,
         )
 
-    def handle_key(self, char):
-        if self.insert_mode:
-            self.insert_at_cursor(char)
-        else:
-            pyperclip.copy(char)
+    def flush_pending_insert(self):
+        self.pending_insert_after_id = None
 
-    def insert_at_cursor(self, char):
-        previous_clipboard = None
+        if self.paste_in_progress:
+            self.pending_insert_after_id = self.after(
+                INSERT_DEBOUNCE_MS,
+                self.flush_pending_insert,
+            )
+            return
+
+        text = self.pending_insert_buffer.pop_all()
+
+        if not text:
+            return
+
+        self.paste_in_progress = True
 
         try:
-            previous_clipboard = pyperclip.paste()
-        except Exception:
-            pass
+            self.insert_at_cursor(text)
+        finally:
+            self.paste_in_progress = False
 
+            if self.pending_insert_buffer.has_text() and self.pending_insert_after_id is None:
+                self.pending_insert_after_id = self.after(
+                    INSERT_DEBOUNCE_MS,
+                    self.flush_pending_insert,
+                )
+
+    def insert_at_cursor(self, text):
         try:
-            pyperclip.copy(char)
+            pyperclip.copy(text)
 
             if self.previous_window_title:
                 windows = gw.getWindowsWithTitle(self.previous_window_title)
@@ -206,13 +236,9 @@ class WelshKeys(ctk.CTk):
                     time.sleep(0.2)
 
             pyautogui.hotkey("ctrl", "v")
-            time.sleep(0.2)
-
-            if previous_clipboard is not None:
-                pyperclip.copy(previous_clipboard)
 
         except Exception:
-            pyperclip.copy(char)
+            pyperclip.copy(text)
 
 
 if __name__ == "__main__":

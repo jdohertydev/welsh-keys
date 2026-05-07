@@ -17,15 +17,14 @@ Welsh Keys helps Windows users type Welsh accented characters from a small alway
 - Dark keyboard-style interface
 - Welsh accented character buttons
 - Shift toggle for lowercase and uppercase characters
-- Insert-at-cursor mode
-- Copy-only fallback mode
+- Clipboard-based insert-at-cursor behavior
 
 ## Current Features
 
 - Lowercase characters: â ê î ô û ŵ ŷ ï ö
 - Uppercase characters: Â Ê Î Ô Û Ŵ Ŷ Ï Ö
-- Insert mode uses the clipboard and `Ctrl+V` to place characters in the previously active app
-- Copy mode copies the selected character to the clipboard
+- Clicking a Welsh key copies the selected character/string to the clipboard and sends `Ctrl+V` to the previously active app
+- If automatic insertion fails, the selected Welsh character/string remains on the clipboard for manual paste
 - Fixed compact layout with all character keys on one row
 
 ## Non-Goals For v0.1
