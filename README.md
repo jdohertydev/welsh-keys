@@ -12,7 +12,7 @@ Windows may show a SmartScreen warning because this is an unsigned early test ap
 
 ## Screenshot
 
-Screenshot coming later. The current prototype is intentionally minimal: one row of Welsh keys and compact control buttons.
+![Welsh Keys compact keyboard screenshot](docs/screenshot.png)
 
 ## Features
 
