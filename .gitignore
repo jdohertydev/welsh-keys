@@ -17,6 +17,7 @@ logs/
 
 screenshots/
 *.png
+!docs/screenshot.png
 *.jpg
 *.jpeg
 *.gif
