@@ -27,3 +27,4 @@ screenshots/
 .pytest_cache/
 .pytest_cache/
 pytest-cache-files-*/
+release/
